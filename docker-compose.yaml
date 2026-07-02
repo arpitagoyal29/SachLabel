@@ -1,0 +1,15 @@
+services:
+    postgres:
+       image: postgres:15
+       container_name: sachlabel_postgres
+       environment:
+          POSTGRES_USER: sachlabel
+          POSTGRES_PASSWORD: sachlabel123
+          POSTGRES_DB: sachlabel_db
+       ports:
+          - "5432:5432"
+       volumes:
+          - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
