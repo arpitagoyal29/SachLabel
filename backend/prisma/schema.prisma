@@ -12,8 +12,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum IngredientStatus {
+  SAFE
+  BANNED
+  SCHEDULE_H
+  EU_BANNED
+}
+
 model Ingredient {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  createdAt   DateTime @default(now())
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  status      IngredientStatus @default(SAFE)
+  reason      String?
+  source      String?
+  createdAt   DateTime         @default(now())
 }
