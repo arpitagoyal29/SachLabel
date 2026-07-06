@@ -19,6 +19,12 @@ enum IngredientStatus {
   EU_BANNED
 }
 
+enum Severity{
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model Ingredient {
   id          Int              @id @default(autoincrement())
   name        String           @unique
@@ -26,4 +32,20 @@ model Ingredient {
   reason      String?
   source      String?
   createdAt   DateTime         @default(now())
+  combinationsA CombinationRule[] @relation("CombinationA")
+  combinationsB CombinationRule[] @relation("CombinationB")
+
+}
+
+model CombinationRule {
+  id            Int      @id @default(autoincrement())
+  ingredientAId Int
+  ingredientBId Int
+  severity      Severity
+  reason        String
+  source        String?
+  createdAt     DateTime @default(now())
+  ingredientA Ingredient @relation("CombinationA", fields: [ingredientAId], references: [id])
+  ingredientB Ingredient @relation("CombinationB", fields: [ingredientBId], references: [id])
+  @@unique([ingredientAId, ingredientBId])
 }
