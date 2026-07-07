@@ -2,10 +2,11 @@ services:
     postgres:
        image: postgres:15
        container_name: sachlabel_postgres
+       restart: unless-stopped
        environment:
-          POSTGRES_USER: sachlabel
-          POSTGRES_PASSWORD: sachlabel123
-          POSTGRES_DB: sachlabel_db
+          POSTGRES_USER: ${POSTGRES_USER}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+          POSTGRES_DB: ${POSTGRES_DB}
        ports:
           - "5432:5432"
        volumes:
