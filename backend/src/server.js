@@ -4,6 +4,7 @@ const prisma = require('./lib/prisma');
 const ingredientRoutes = require('./routes/ingredientRoutes');
 const combinationRoutes = require('./routes/combinationRoutes');
 const mismatchRoutes = require('./routes/mismatchRoutes');
+const verifyProductRoutes = require('./routes/verifyProductRoutes');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/api', ingredientRoutes);
 app.use('/api', combinationRoutes);
 app.use('/api', mismatchRoutes);
+app.use('/api', verifyProductRoutes);
 
 const PORT = process.env.PORT || 3000;
 
