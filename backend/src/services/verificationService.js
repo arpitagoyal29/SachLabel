@@ -65,13 +65,14 @@ async function verifyProduct(product) {
   }
 
     const enrichedFindings = await Promise.all(
-    findings.map((f) => explainFlag(`Layer ${f.layer} issue`, f.detail).then((explanation) => ({ ...f, explanation })))
+          findings.map((f) => explainFlag(f.detail).then((explanation) => ({ ...f, explanation })))
+
   );
 
   return {
     verdict: overallVerdict(findings),
     findingCount: findings.length,
-    findings,
+    findings: enrichedFindings,
   };
 }
 

@@ -1,5 +1,5 @@
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = 'gemini-2.0-flash';
+const GEMINI_MODEL = 'gemini-2.5-flash';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 async function explainFlag(name, reason) {
@@ -8,7 +8,7 @@ async function explainFlag(name, reason) {
   }
   
     try {
-    const prompt = `In 2 short, simple sentences, explain to an everyday shopper why this cosmetic ingredient was flagged. Be factual. Do not add medical advice beyond explaining the flag. Ingredient: "${name}". Flag reason: "${reason}".`;
+    const prompt = `In 2 short, simple sentences, explain to an everyday shopper why a cosmetic product was flagged for this issue. Be factual. Do not add medical advice beyond explaining the flag. Issue: "${detail}".`;
 
     const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
       method: 'POST',
