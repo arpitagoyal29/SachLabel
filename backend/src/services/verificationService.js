@@ -4,6 +4,7 @@ const { compareSources } = require('./mismatchService');
 const { classifySource } = require('./sourceService');
 const { detectDrugClaims } = require('./claimsService');
 const { detectVagueDisclosure } = require('./disclosureService');
+const { explainFlag } = require('./geminiService');
 
 const SEVERITY_RANK = { SAFE: 0, LOW: 1, MEDIUM: 2, HIGH: 3, CRITICAL: 4 };
 
@@ -62,6 +63,10 @@ async function verifyProduct(product) {
       findings.push({ layer: 3, severity: 'HIGH', detail: `On label but hidden from website: "${hidden}"` });
     }
   }
+
+    const enrichedFindings = await Promise.all(
+    findings.map((f) => explainFlag(`Layer ${f.layer} issue`, f.detail).then((explanation) => ({ ...f, explanation })))
+  );
 
   return {
     verdict: overallVerdict(findings),
