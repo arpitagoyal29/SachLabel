@@ -1,8 +1,9 @@
 const prisma = require('../lib/prisma');
+const { normalize } = require('../lib/normalize');
 
 async function checkCombinations(names) {
   const ingredients = await prisma.ingredient.findMany({
-    where: { name: { in: names } },
+    where: { normalizedName: { in: names.map(normalize) } },
   });
 
    const ids = ingredients.map((i) => i.id);

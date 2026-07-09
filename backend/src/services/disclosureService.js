@@ -1,4 +1,4 @@
-const { normalize } = require('./mismatchService');
+const { normalize } = require('../lib/normalize');
 
 const VAGUE_TERMS = new Set([
   'fragrance',

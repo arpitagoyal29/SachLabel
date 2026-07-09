@@ -1,10 +1,4 @@
-function normalize(name) {
-    return name
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9 ]/g, '')
-      .replace(/\s+/g, ' ');
-}
+const { normalize } = require('../lib/normalize');
 
 function compareSources(listA, listB) {
     const setA = new Set(listA.map(normalize));

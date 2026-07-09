@@ -1,4 +1,4 @@
-const { verifyIngredient } = require('./ingredientService');
+const { verifyIngredients } = require('./ingredientService');
 const { checkCombinations } = require('./combinationService');
 const { compareSources } = require('./mismatchService');
 const { classifySource } = require('./sourceService');
@@ -7,6 +7,13 @@ const { detectVagueDisclosure } = require('./disclosureService');
 const { explainFlag } = require('./geminiService');
 
 const SEVERITY_RANK = { SAFE: 0, LOW: 1, MEDIUM: 2, HIGH: 3, CRITICAL: 4 };
+
+const SEVERITY_BY_STATUS = {
+  BANNED: 'CRITICAL',
+  SCHEDULE_H: 'CRITICAL',
+  EU_BANNED: 'HIGH',
+  RESTRICTED: 'LOW',
+};
 
 function overallVerdict(findings) {
   const maxRank = findings.reduce((max, f) => Math.max(max, SEVERITY_RANK[f.severity]), 0);
@@ -19,14 +26,16 @@ async function verifyProduct(product) {
   const { ingredients = [], marketingText, sourceUrl, websiteIngredients } = product;
   const findings = [];
 
-  // Layer 1 — individual ingredient safety
-  for (const name of ingredients) {
-    const result = await verifyIngredient(name);
-    if (result.status === 'BANNED' || result.status === 'SCHEDULE_H') {
-      findings.push({ layer: 1, severity: 'CRITICAL', detail: `${result.name}: ${result.reason}` });
-    } else if (result.status === 'EU_BANNED') {
-      findings.push({ layer: 1, severity: 'HIGH', detail: `${result.name}: ${result.reason}` });
-    }
+  // Layer 1 — individual ingredient safety (one batch, case-insensitive query)
+  const matched = await verifyIngredients(ingredients);
+  for (const ing of matched) {
+    const severity = SEVERITY_BY_STATUS[ing.status];
+    if (!severity) continue;
+    const detail =
+      ing.status === 'RESTRICTED'
+        ? `${ing.name}: permitted only within limits — ${ing.reason}. Concentration not disclosed on label.`
+        : `${ing.name}: ${ing.reason}`;
+    findings.push({ layer: 1, severity, detail });
   }
 
   // Layer 2 — dangerous combinations

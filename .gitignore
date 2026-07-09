@@ -1,3 +1,6 @@
 node_modules/
 .env
 CLAUDE.md
+DECISIONS.MD
+OPEN_QUESTIONS.MD
+PROGRESS.MD

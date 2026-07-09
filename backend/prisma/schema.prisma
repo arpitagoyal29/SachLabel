@@ -17,6 +17,7 @@ enum IngredientStatus {
   BANNED
   SCHEDULE_H
   EU_BANNED
+  RESTRICTED
 }
 
 enum Severity{
@@ -28,6 +29,7 @@ enum Severity{
 model Ingredient {
   id          Int              @id @default(autoincrement())
   name        String           @unique
+  normalizedName String        @unique
   status      IngredientStatus @default(SAFE)
   reason      String?
   source      String?

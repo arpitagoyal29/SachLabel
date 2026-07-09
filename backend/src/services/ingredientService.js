@@ -1,8 +1,9 @@
 const prisma = require('../lib/prisma');
+const { normalize } = require('../lib/normalize');
 
 async function verifyIngredient(name){
     const ingredient = await prisma.ingredient.findUnique({
-        where: { name },
+        where: { normalizedName: normalize(name) },
     });
     if(!ingredient) {
         return {
@@ -15,4 +16,11 @@ async function verifyIngredient(name){
     return ingredient;
 }
 
-module.exports = { verifyIngredient };
+async function verifyIngredients(names) {
+  if (names.length === 0) return [];
+  return prisma.ingredient.findMany({
+    where: { normalizedName: { in: names.map(normalize) } },
+  });
+}
+
+module.exports = { verifyIngredient,verifyIngredients };

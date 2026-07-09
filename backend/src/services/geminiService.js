@@ -8,7 +8,7 @@ async function explainFlag(detail) {
   }
 
   try {
-    const prompt = `In 2 short, simple sentences, explain to an everyday shopper why a cosmetic product was flagged for this issue. Be factual. Do not add medical advice beyond explaining the flag. Issue: "${detail}".`;
+    const prompt = `In 2 short, simple sentences, explain to an everyday shopper what this flag means. Explain ONLY what is stated. Do NOT speculate, infer, or assume any fact not explicitly given — in particular, never claim the product exceeds a limit or contains any specific amount. Be factual and neutral. Flag: "${detail}".`;
 
     const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
       method: 'POST',
