@@ -1,24 +1,27 @@
-import { VERDICT_STYLES, FRAUD_SIGNAL_TEXT } from '../lib/severity'
+import { VERDICT_META } from '../lib/severity'
 
-function VerdictBanner({ verdict, findingCount, isPossibleFraud }) {
-  const style = VERDICT_STYLES[verdict]
-  const summary =
-    verdict === 'SAFE'
-      ? 'No violations detected in the ingredients provided.'
-      : `${findingCount} potential issue${findingCount === 1 ? '' : 's'} found — see details below.`
+function VerdictBanner({ verdict, findingCount, flaggedLayerCount, totalLayerCount }) {
+  const meta = VERDICT_META[verdict]
 
-      return (
-    <div className={`${style.bg} rounded-2xl px-6 py-10 text-center`}>
-      {isPossibleFraud && (
-        <p className={`${FRAUD_SIGNAL_TEXT} mb-2 text-sm font-semibold`}>
-          Possible source mismatch detected
-        </p>
-      )}
-      <h2 className={`${style.text} text-4xl font-bold`}>{style.label}</h2>
-      <p className="mt-3 text-base text-[#333333]">{summary}</p>
+  return (
+    <div className="animate-rise-in rounded-md px-6 py-6" style={{ background: 'var(--term-bg)' }}>
+      <p className="font-mono text-[10px] uppercase tracking-widest" style={{ color: 'var(--term-text-dim)' }}>
+        Verdict
+      </p>
+      <p className="mt-2.5 font-mono text-3xl font-bold tracking-tight" style={{ color: meta.colorVar }}>
+        {meta.label.toUpperCase()}
+      </p>
+      <p className="mt-2.5 font-mono text-xs" style={{ color: 'var(--term-text)' }}>
+        {flaggedLayerCount} / {totalLayerCount} checks flagged &middot; {findingCount} finding{findingCount === 1 ? '' : 's'} total
+      </p>
+      <p
+        className="mt-3.5 border-t pt-3 font-mono text-[10px]"
+        style={{ borderColor: 'var(--term-line)', color: 'var(--term-text-dim)' }}
+      >
+        Screens declared ingredients against known regulatory data — not a lab test
+      </p>
     </div>
   )
-  
 }
 
 export default VerdictBanner

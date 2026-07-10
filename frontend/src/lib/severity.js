@@ -1,7 +1,25 @@
-export const VERDICT_STYLES = {
-  SAFE: { label: 'No violations detected', text: 'text-[#3B6D11]', bg: 'bg-[#EAF3DE]' },
-  CAUTION: { label: 'Caution', text: 'text-[#BA7517]', bg: 'bg-[#FAEEDA]' },
-  HIGH_RISK: { label: 'High Risk', text: 'text-[#A32D2D]', bg: 'bg-[#FCEBEB]' },
+export const FINDING_SEVERITY = {
+  CRITICAL: { rank: 4, label: 'Critical', textVar: 'var(--flagged)' },
+  HIGH: { rank: 3, label: 'High', textVar: 'var(--flagged)' },
+  MEDIUM: { rank: 2, label: 'Medium', textVar: 'var(--caution)' },
+  LOW: { rank: 1, label: 'Low', textVar: 'var(--ink-faint)' },
 }
 
-export const FRAUD_SIGNAL_TEXT = 'text-[#8A1C4A]'
+export const LAYER_LABELS = {
+  1: 'Ingredient Safety',
+  2: 'Dangerous Combinations',
+  3: 'Source Mismatch',
+  4: 'Seller Verification',
+  5: 'Marketing Claims',
+  6: 'Ingredient Disclosure',
+}
+
+export const LAYER_ORDER = [1, 2, 3, 4, 5, 6]
+
+export const ALWAYS_RUN_LAYERS = [1, 2, 6] // only need `ingredients`, which is always submitted
+
+export const VERDICT_META = {
+  SAFE: { label: 'No Violations', colorVar: 'var(--term-verdict-safe)' },
+  CAUTION: { label: 'Caution', colorVar: 'var(--term-verdict-caution)' },
+  HIGH_RISK: { label: 'High Risk', colorVar: 'var(--term-verdict)' },
+}

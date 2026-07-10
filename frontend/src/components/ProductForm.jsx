@@ -6,7 +6,7 @@ function ProductForm({ onSubmit }) {
   function handleSubmit(e) {
     e.preventDefault()
     const ingredients = ingredientsText
-      .split('\n')
+      .split(/[,\n]+/)
       .map((line) => line.trim())
       .filter(Boolean)
 
@@ -16,26 +16,29 @@ function ProductForm({ onSubmit }) {
   }
 
     return (
-    <form
-      onSubmit={handleSubmit}
-      className="mx-auto flex max-w-xl flex-col items-center px-6 py-24 text-center"
-    >
-      <p className="text-2xl font-bold text-[#1F3A5F]">
-        Know what's really in it, before you buy.
+    <form onSubmit={handleSubmit} className="py-2 pb-10">
+      <p className="mt-7 mb-1.5 font-mono text-[10.5px] uppercase tracking-wide" style={{ color: 'var(--ink-faint)' }}>
+        Step 1
       </p>
+      <h1 className="mb-5 text-xl font-bold tracking-tight">What's in your product?</h1>
       <textarea
         autoFocus
         value={ingredientsText}
         onChange={(e) => setIngredientsText(e.target.value)}
-        placeholder="Paste the ingredient list, one per line"
+        placeholder="Paste the ingredient list — comma-separated or one per line"
         rows={6}
-        className="mt-6 w-full rounded-2xl border border-gray-300 p-4 text-base"
+        className="w-full rounded-md border p-3.5 text-[13.5px] leading-relaxed"
+        style={{ background: 'var(--paper-sunk)', borderColor: 'var(--line)', color: 'var(--ink)' }}
       />
+      <p className="mt-2 mb-5 font-mono text-[10.5px]" style={{ color: 'var(--ink-faint)' }}>
+        Comma-separated or one per line — paste the label as-is
+      </p>
       <button
         type="submit"
-        className="mt-4 rounded-full bg-[#1F3A5F] px-8 py-3 font-semibold text-white"
+        className="rounded-md px-5 py-3 font-mono text-xs font-semibold uppercase tracking-wide"
+        style={{ background: 'var(--ink)', color: 'var(--paper)' }}
       >
-        Check ingredients
+        Run verification
       </button>
     </form>
   )
