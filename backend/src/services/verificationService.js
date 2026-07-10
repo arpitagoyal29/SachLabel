@@ -35,7 +35,7 @@ async function verifyProduct(product) {
       ing.status === 'RESTRICTED'
         ? `${ing.name}: permitted only within limits — ${ing.reason}. Concentration not disclosed on label.`
         : `${ing.name}: ${ing.reason}`;
-    findings.push({ layer: 1, severity, detail });
+        findings.push({ layer: 1, severity, detail, ingredientName: ing.name });
   }
 
   // Layer 2 — dangerous combinations
@@ -71,6 +71,10 @@ async function verifyProduct(product) {
     for (const hidden of mismatch.onlyInA) {
       findings.push({ layer: 3, severity: 'HIGH', detail: `On label but hidden from website: "${hidden}"` });
     }
+        for (const added of mismatch.onlyInB) {
+      findings.push({ layer: 3, severity: 'MEDIUM', detail: `Listed on website but not on label: "${added}"` });
+    }
+
   }
 
     const enrichedFindings = await Promise.all(
@@ -78,10 +82,27 @@ async function verifyProduct(product) {
 
   );
 
+  const explanationByIngredientName = new Map(
+    enrichedFindings
+      .filter((f) => f.layer === 1)
+      .map((f) => [f.ingredientName, f.explanation])
+  );
+
+  const ingredientResults = matched.map((ing) => ({
+    name: ing.name,
+    status: ing.status,
+    reason: ing.reason,
+    source: ing.source,
+    explanation: explanationByIngredientName.get(ing.name) ?? null,
+  }));
+
+  const findingsForResponse = enrichedFindings.map(({ ingredientName, ...rest }) => rest);
+
   return {
     verdict: overallVerdict(findings),
     findingCount: findings.length,
-    findings: enrichedFindings,
+    findings: findingsForResponse,
+    ingredientResults,
   };
 }
 

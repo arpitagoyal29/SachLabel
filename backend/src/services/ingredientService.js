@@ -18,9 +18,19 @@ async function verifyIngredient(name){
 
 async function verifyIngredients(names) {
   if (names.length === 0) return [];
-  return prisma.ingredient.findMany({
+  const found = await prisma.ingredient.findMany({
     where: { normalizedName: { in: names.map(normalize) } },
   });
+  const byNormalizedName = new Map(found.map((ing) => [ing.normalizedName, ing]));
+  return names.map(
+    (name) =>
+      byNormalizedName.get(normalize(name)) ?? {
+        name,
+        status: 'UNKNOWN',
+        reason: 'Not found in our reference database',
+        source: null,
+      }
+  );
 }
 
 module.exports = { verifyIngredient,verifyIngredients };
