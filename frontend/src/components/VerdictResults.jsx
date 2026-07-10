@@ -9,24 +9,25 @@ function VerdictResults({ result, onReset }) {
   )
 
   const flaggedLayers = new Set(result.findings.map((f) => f.layer))
-
+  const layersRan = new Set(result.checkedLayers)
+  
   return (
   <div className="pb-16">
       <VerdictBanner
         verdict={result.verdict}
         findingCount={result.findingCount}
         flaggedLayerCount={flaggedLayers.size}
-        totalLayerCount={6}
+        totalLayerCount={layersRan.size}
       />
 
-      <LayerTable flaggedLayers={flaggedLayers} />
+      <LayerTable flaggedLayers={flaggedLayers} ranLayers={layersRan} />
 
       {sortedFindings.length > 0 && (
         <>
           <p className="mt-5 mb-1 font-mono text-[10.5px] uppercase tracking-wide" style={{ color: 'var(--ink-faint)' }}>
             Findings — sorted by severity
           </p>
-         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+         <div className="flex flex-wrap gap-3">
             {sortedFindings.map((finding, i) => (
               <FindingCard key={`${finding.layer}-${i}`} finding={finding} index={i} />
             ))}

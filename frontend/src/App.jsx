@@ -47,7 +47,7 @@ function App() {
       </header>
       <main className="mx-auto w-full max-w-6xl min-h-screen flex-1 px-5">
         {status === 'idle' && <ProductForm onSubmit={handleSubmit} />}
-        {status === 'loading' && <LoadingSkeleton />}
+        {status === 'loading' && <LoadingSkeleton payload={lastPayload} />}
         {status === 'error' && <ErrorState onRetry={() => handleSubmit(lastPayload)} />}
         {status === 'success' && (
           <VerdictResults result={result} onReset={handleReset} />

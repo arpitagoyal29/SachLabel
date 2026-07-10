@@ -5,6 +5,7 @@ const { classifySource } = require('./sourceService');
 const { detectDrugClaims } = require('./claimsService');
 const { detectVagueDisclosure } = require('./disclosureService');
 const { explainFlag } = require('./geminiService');
+const { scrapeIngredients } = require('./scraperService');
 
 const SEVERITY_RANK = { SAFE: 0, LOW: 1, MEDIUM: 2, HIGH: 3, CRITICAL: 4 };
 
@@ -65,16 +66,25 @@ async function verifyProduct(product) {
     }
   }
 
-  // Layer 3 — label vs website mismatch (only if website ingredients provided)
-  if (websiteIngredients) {
-    const mismatch = compareSources(ingredients, websiteIngredients);
+  // Layer 3 — label vs website mismatch (explicit websiteIngredients, else best-effort scrape from sourceUrl)
+  let effectiveWebsiteIngredients = websiteIngredients;
+  if (!effectiveWebsiteIngredients && sourceUrl) {
+    try {
+      const scraped = await scrapeIngredients(sourceUrl);
+      if (scraped.length > 0) effectiveWebsiteIngredients = scraped;
+    } catch {
+      // fetch failed, timed out, or non-OK response — Layer 3 stays skipped, never fabricated
+    }
+  }
+
+  if (effectiveWebsiteIngredients && effectiveWebsiteIngredients.length > 0) {
+    const mismatch = compareSources(ingredients, effectiveWebsiteIngredients);
     for (const hidden of mismatch.onlyInA) {
       findings.push({ layer: 3, severity: 'HIGH', detail: `On label but hidden from website: "${hidden}"` });
     }
-        for (const added of mismatch.onlyInB) {
+    for (const added of mismatch.onlyInB) {
       findings.push({ layer: 3, severity: 'MEDIUM', detail: `Listed on website but not on label: "${added}"` });
     }
-
   }
 
     const enrichedFindings = await Promise.all(
@@ -98,11 +108,18 @@ async function verifyProduct(product) {
 
   const findingsForResponse = enrichedFindings.map(({ ingredientName, ...rest }) => rest);
 
+  const checkedLayers = [1, 2, 6];
+  if (sourceUrl) checkedLayers.push(4);
+  if (marketingText) checkedLayers.push(5);
+  if (effectiveWebsiteIngredients && effectiveWebsiteIngredients.length > 0) checkedLayers.push(3);
+  checkedLayers.sort((a, b) => a - b);
+
   return {
     verdict: overallVerdict(findings),
     findingCount: findings.length,
     findings: findingsForResponse,
     ingredientResults,
+    checkedLayers,
   };
 }
 

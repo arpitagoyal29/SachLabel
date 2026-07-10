@@ -23,3 +23,11 @@ export const VERDICT_META = {
   CAUTION: { label: 'Caution', colorVar: 'var(--term-verdict-caution)' },
   HIGH_RISK: { label: 'High Risk', colorVar: 'var(--term-verdict)' },
 }
+
+export function ranLayers(payload) {
+  const ran = new Set(ALWAYS_RUN_LAYERS)
+  if (payload?.sourceUrl) ran.add(4)
+  if (payload?.websiteIngredients?.length) ran.add(3)
+  if (payload?.marketingText) ran.add(5)
+  return ran
+}

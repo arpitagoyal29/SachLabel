@@ -6,7 +6,7 @@ function FindingCard({ finding, index }) {
   return (
     <div
       className="animate-rise-in grid grid-cols-[56px_1fr] gap-3 rounded-md border p-3.5"
-      style={{ animationDelay: `${0.15 + index * 0.1}s`, borderColor: 'var(--line)' }}
+      style={{ animationDelay: `${0.15 + index * 0.1}s`, borderColor: 'var(--line)', flex: '1 1 300px' }}
     >
       <span className="pt-px font-mono text-[10px] font-bold uppercase tracking-wide" style={{ color: style.textVar }}>
         {style.label}

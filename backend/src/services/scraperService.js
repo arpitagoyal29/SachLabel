@@ -13,7 +13,7 @@ function extractIngredients(html) {
 
 async function scrapeIngredients(url) {
     return getOrSet(`scrape:${url}`, 60 * 60 * 24, async () =>{
-         const response = await fetch(url);
+         const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
 
          if(!response.ok) {
         throw new Error(`Failed to fetch ${url}: ${response.status}`);
