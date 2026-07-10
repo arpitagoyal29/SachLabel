@@ -72,6 +72,7 @@ const ingredients = [
   // ─────────────────────────────────────────────────────────────
   { name: 'Methyldibromo Glutaronitrile', status: 'EU_BANNED', reason: 'Preservative; strong contact allergen; prohibited in EU cosmetics', source: EU_ANNEX_II },
   { name: 'Zinc Pyrithione', status: 'EU_BANNED', reason: 'Prohibited in EU cosmetics (reprotoxic classification)', source: EU_ANNEX_II },
+  { name: 'Pyrithione Zinc', status: 'EU_BANNED', reason: 'Prohibited in EU cosmetics (reprotoxic classification); same substance as Zinc Pyrithione, common alternate label word order', source: EU_ANNEX_II },
   { name: 'Butylphenyl Methylpropional', status: 'EU_BANNED', reason: 'Fragrance ingredient (Lilial); reprotoxic; prohibited in EU cosmetics', source: EU_ANNEX_II },
   { name: 'Diethylene Glycol', status: 'EU_BANNED', reason: 'Toxic solvent; prohibited in cosmetics', source: EU_ANNEX_II },
   { name: 'Isopropylparaben', status: 'EU_BANNED', reason: 'Paraben preservative; prohibited in EU cosmetics', source: EU_ANNEX_II },

@@ -20,7 +20,7 @@ const ingredientRoutes = require('./routes/ingredientRoutes');
 const combinationRoutes = require('./routes/combinationRoutes');
 const mismatchRoutes = require('./routes/mismatchRoutes');
 const verifyProductRoutes = require('./routes/verifyProductRoutes');
-
+const extractRoutes = require('./routes/extractRoutes');
 
 const app = express();
 
@@ -46,6 +46,7 @@ app.use('/api', ingredientRoutes);
 app.use('/api', combinationRoutes);
 app.use('/api', mismatchRoutes);
 app.use('/api', verifyProductRoutes);
+app.use('/api', extractRoutes);
 
 app.get('/api', (req, res) => {
   res.json({
@@ -56,6 +57,7 @@ app.get('/api', (req, res) => {
       'POST /api/check-combinations': 'Check an ingredient list for dangerous combinations',
       'POST /api/check-mismatch': 'Compare two ingredient sources for mismatches (fraud signal)',
       'POST /api/verify-product': 'Run all 6 verification layers and return an aggregated verdict',
+      'POST /api/extract-ingredients': 'Extract an ingredient list from a photo of a product label (OCR, multipart field name "image")',
     },
   });
 });

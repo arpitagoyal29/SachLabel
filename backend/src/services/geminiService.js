@@ -34,7 +34,54 @@ async function explainFlag(detail) {
   }
 }
 
+function stripConcentration(name) {
+  return name
+    .replace(/\s*\([^)]*%[^)]*\)\s*$/, '')
+    .replace(/\s*\d+(\.\d+)?\s*%\s*$/, '')
+    .trim();
+}
 
-module.exports = { explainFlag };
+async function extractFromImage(imageBuffer, mimeType) {
+    if(!GEMINI_API_KEY) {
+       return [];
+    }
+
+    try {
+           const prompt = 'Transcribe ONLY the ingredient list visible in this image, exactly as written. Return a JSON array of ingredient name strings and nothing else — no markdown, no explanation, no extra text. Do NOT include concentration percentages or parenthetical amounts (e.g. write "Zinc Pyrithione", not "Zinc Pyrithione (1.0%)" or "Zinc Pyrithione 1.0%"). Do not infer, guess, or add any ingredient that is not literally visible. If no ingredient list is visible in the image, return an empty array: []';
+
+       const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`,{
+           method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(15000),
+            body: JSON.stringify({
+               contents: [{
+                 parts: [
+                    { text: prompt },
+                    {inline_data: { mime_type: mimeType, data: imageBuffer.toString('base64') }}
+                 ],
+               }],
+           }),
+       });
+       if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) return [];
+   
+        const cleaned = text.trim().replace(/^```json\s*/i, '').replace(/```\s*$/, '');
+    const parsed = JSON.parse(cleaned);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .filter((item) => typeof item === 'string' && item.trim().length > 0)
+      .map(stripConcentration)
+      .filter((item) => item.length > 0);
+  } catch (err) {
+    return [];
+    }
+}
+module.exports = { explainFlag, extractFromImage };
 
 

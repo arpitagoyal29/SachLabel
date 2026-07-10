@@ -11,3 +11,21 @@ export async function verifyProduct(payload) {
 
   return res.json()
 }
+
+export async function extractIngredients(imageFile) {
+  const formData = new FormData()
+  formData.append('image', imageFile)
+
+  const res = await fetch('/api/extract-ingredients', {
+    method: 'POST',
+    body: formData,
+  })
+
+  if (!res.ok) {
+    throw new Error(`extract-ingredients failed: ${res.status}`)
+  }
+
+  const data = await res.json()
+  return data.ingredients
+}
+

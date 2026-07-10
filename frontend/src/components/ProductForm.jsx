@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { extractIngredients } from '../lib/api'
 
 function ProductForm({ onSubmit }) {
   const [ingredientsText, setIngredientsText] = useState('')
   const [sourceUrl, setSourceUrl] = useState('')
   const [websiteIngredientsText, setWebsiteIngredientsText] = useState('')
+  const [isExtracting, setIsExtracting] = useState(false)
+  const [extractError, setExtractError] = useState(null)
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -26,6 +29,27 @@ function ProductForm({ onSubmit }) {
     })
   }
 
+    async function handleFileChange(e) {
+    const file = e.target.files[0]
+    if (!file) return
+
+    setIsExtracting(true)
+    setExtractError(null)
+    try {
+      const ingredients = await extractIngredients(file)
+      if (ingredients.length === 0) {
+        setExtractError('No ingredient list detected — try a clearer photo, or type it in below')
+      } else {
+        setIngredientsText(ingredients.join('\n'))
+      }
+    } catch (err) {
+      setExtractError('Could not read the photo — try again or type the ingredients manually')
+    } finally {
+      setIsExtracting(false)
+      e.target.value = ''
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="py-2 pb-10">
       <p className="mt-7 mb-1.5 font-mono text-[10.5px] uppercase tracking-wide" style={{ color: 'var(--ink-faint)' }}>
@@ -44,6 +68,28 @@ function ProductForm({ onSubmit }) {
       <p className="mt-2 mb-8 font-mono text-[10.5px]" style={{ color: 'var(--ink-faint)' }}>
         Comma-separated or one per line — paste the label as-is
       </p>
+
+            <input
+        id="photoUpload"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={handleFileChange}
+        disabled={isExtracting}
+        className="hidden"
+      />
+      <label
+        htmlFor="photoUpload"
+        className="mb-8 inline-block cursor-pointer rounded-md border px-3 py-2 font-mono text-[11px] uppercase tracking-wide"
+        style={{ borderColor: 'var(--line)', color: 'var(--accent)' }}
+      >
+        {isExtracting ? 'Reading label...' : 'Upload a photo instead'}
+      </label>
+      {extractError && (
+        <p className="mt-1.5 mb-8 font-mono text-[10.5px]" style={{ color: 'var(--flagged)' }}>
+          {extractError}
+        </p>
+      )}
+
 
       <p className="mb-1.5 font-mono text-[10.5px] uppercase tracking-wide" style={{ color: 'var(--ink-faint)' }}>
         Step 2 — optional
