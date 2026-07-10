@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const { getOrSet } = require('../lib/cache');
 
 function extractIngredients(html) {
     const $ = cheerio.load(html);
@@ -11,14 +12,16 @@ function extractIngredients(html) {
 }
 
 async function scrapeIngredients(url) {
-    const response = await fetch(url);
+    return getOrSet(`scrape:${url}`, 60 * 60 * 24, async () =>{
+         const response = await fetch(url);
 
-    if(!response.ok) {
+         if(!response.ok) {
         throw new Error(`Failed to fetch ${url}: ${response.status}`);
     }
-
+    
     const html = await response.text();
     return extractIngredients(html)
+  });
 }
 
 module.exports = { extractIngredients, scrapeIngredients };

@@ -12,7 +12,9 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const { RedisStore } = require('rate-limit-redis');
 
+const redis = require('./lib/redis');
 const prisma = require('./lib/prisma');
 const ingredientRoutes = require('./routes/ingredientRoutes');
 const combinationRoutes = require('./routes/combinationRoutes');
@@ -33,6 +35,9 @@ const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' },
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+  }),
 });
 
 app.use('/api', apiLimiter);
