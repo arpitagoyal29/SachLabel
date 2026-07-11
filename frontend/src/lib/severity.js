@@ -14,6 +14,15 @@ export const LAYER_LABELS = {
   6: 'Ingredient Disclosure',
 }
 
+export const LAYER_DESCRIPTIONS = {
+  1: 'Checks every declared ingredient against known regulatory blocklists — CDSCO banned substances, Schedule H prescription drugs, and EU-prohibited ingredients.',
+  2: 'Checks whether any two ingredients, used together, are known to cause irritation, instability, or barrier damage — even if each is safe on its own.',
+  3: 'Compares the ingredients on the physical label against what the seller lists online, to catch anything hidden or added between the two.',
+  4: "Checks whether the seller is on a recognized, accountable platform — not a judgment on the product itself, just who's selling it.",
+  5: 'Scans marketing text for language that makes an illegal drug-style claim (e.g. "cures," "clinically proven") a cosmetic legally cannot make.',
+  6: 'Flags vague ingredient terms like "Fragrance" or "Proprietary Blend" that can legally hide undisclosed chemicals.',
+}
+
 export const LAYER_ORDER = [1, 2, 3, 4, 5, 6]
 
 export const ALWAYS_RUN_LAYERS = [1, 2, 6] // only need `ingredients`, which is always submitted

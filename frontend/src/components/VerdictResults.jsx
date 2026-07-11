@@ -31,7 +31,7 @@ function VerdictResults({ result, onReset }) {
         </div>
       )}
 
-      <LayerTable flaggedLayers={flaggedLayers} ranLayers={layersRan} />
+      <LayerTable flaggedLayers={flaggedLayers} ranLayers={layersRan} findings={sortedFindings} />
 
       {sortedFindings.length > 0 && (
         <>
@@ -47,11 +47,11 @@ function VerdictResults({ result, onReset }) {
       )}
 
       <div className="mt-8 flex justify-center">
-        <button
+          <button
           type="button"
           onClick={onReset}
-          className="rounded-md border px-4 py-2 font-mono text-[11.5px] uppercase tracking-wide"
-          style={{ borderColor: 'var(--line)', color: 'var(--accent)' }}
+          className="rounded-md border border-[var(--line)] px-4 py-2 font-mono text-[11.5px] uppercase tracking-wide transition-colors hover:border-[var(--accent)] hover:bg-[var(--paper-sunk)]"
+          style={{ color: 'var(--accent)' }}
         >
           Check another product
         </button>

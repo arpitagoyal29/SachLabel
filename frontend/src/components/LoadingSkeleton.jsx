@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 function buildLines(payload) {
   const hasUrl = Boolean(payload?.sourceUrl)
   const hasWebsiteIngredients = Boolean(payload?.websiteIngredients?.length)
@@ -21,12 +23,40 @@ function buildLines(payload) {
   ]
 }
 
+const FUN_FACTS = [
+  'Lipstick used to contain crushed fish scales for shimmer — literally ground fish skin.',
+  'Carmine (E120), a common red pigment in cosmetics, comes from crushed cochineal insects — same trick ancient Egypt used.',
+  "The FDA doesn't require cosmetic companies to prove a product is safe before it goes on sale — that's on the brand, not a regulator.",
+  "Waterproof mascara often uses waxes borrowed from car-polish formulas — that's why it survives everything except makeup remover.",
+  '"Fragrance" on a label can legally hide dozens of individual chemicals without listing a single one.',
+]
+
+function FunFact() {
+  const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % FUN_FACTS.length), 3200)
+    return () => clearInterval(id)
+  }, [])
+
+  return (
+    <div className="mt-16 max-w-md text-center">
+      <p className="mb-2 font-mono text-[10.5px] uppercase tracking-wide" style={{ color: 'var(--ink-faint)' }}>
+        While you wait
+      </p>
+      <p key={index} className="animate-term-in text-[14px] leading-relaxed" style={{ color: 'var(--ink-soft)' }}>
+        {FUN_FACTS[index]}
+      </p>
+    </div>
+  )
+}
+
 function LoadingSkeleton({ payload }) {
   const lines = buildLines(payload)
 
- return (
-    <div className="py-10" role="status" aria-label="Running verification">
-      <div className="rounded-md p-5 font-mono text-[12.5px] leading-loose" style={{ background: 'var(--term-bg)' }}>
+  return (
+    <div className="flex flex-col items-center py-10" role="status" aria-label="Running verification">
+      <div className="w-full rounded-md p-5 font-mono text-[12.5px] leading-loose" style={{ background: 'var(--term-bg)' }}>
         {lines.map((line, i) => (
           <div
             key={i}
@@ -46,6 +76,7 @@ function LoadingSkeleton({ payload }) {
           </div>
         ))}
       </div>
+      <FunFact />
     </div>
   )
 }
