@@ -25,7 +25,8 @@ const extractRoutes = require('./routes/extractRoutes');
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+const corsOrigin = process.env.CORS_ORIGIN;
+app.use(cors(corsOrigin ? { origin: corsOrigin } : {}));
 app.use(morgan('dev'));
 app.use(express.json());
 
