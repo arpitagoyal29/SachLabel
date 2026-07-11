@@ -36,7 +36,7 @@ model Ingredient {
   createdAt   DateTime         @default(now())
   combinationsA CombinationRule[] @relation("CombinationA")
   combinationsB CombinationRule[] @relation("CombinationB")
-
+  aliases       IngredientAlias[]
 }
 
 model CombinationRule {
@@ -50,4 +50,13 @@ model CombinationRule {
   ingredientA Ingredient @relation("CombinationA", fields: [ingredientAId], references: [id])
   ingredientB Ingredient @relation("CombinationB", fields: [ingredientBId], references: [id])
   @@unique([ingredientAId, ingredientBId])
+}
+
+model IngredientAlias {
+  id              Int        @id @default(autoincrement())
+  alias           String     @unique
+  normalizedAlias String     @unique
+  ingredientId    Int
+  createdAt       DateTime   @default(now())
+  ingredient      Ingredient @relation(fields: [ingredientId], references: [id])
 }

@@ -6,12 +6,12 @@
  * well-documented interaction risks, not legal prohibitions. Severity reflects
  * irritation / barrier-damage / instability risk, not illegality.
  *
- * Every `a` and `b` must exist by name in data/ingredients.js — the seed resolves
- * names to database ids at runtime and stores each edge canonically (smaller id
- * first), so order here does not matter.
- *
- * Because synonyms are seeded as separate rows (no alias table yet), key rules are
- * duplicated for common synonyms (e.g. Retinoic Acid and Tretinoin).
+ * Every `a` and `b` must exist by name in data/ingredients.js OR data/aliases.js —
+ * the seed resolves names to canonical database ids at runtime (via the alias
+ * table) and stores each edge canonically (smaller id first), so order here does
+ * not matter. Use canonical names here, not aliases — e.g. "Retinoic Acid", not
+ * "Tretinoin"; "Ascorbic Acid", not "Vitamin C" — the alias resolves at query time,
+ * so there's no need to duplicate rules for a synonym.
  */
 
 const DERM = 'Dermatological guidance — interaction risk';
@@ -24,19 +24,15 @@ const combinations = [
   { a: 'Retinol', b: 'Glycolic Acid', severity: 'HIGH', reason: 'Retinoid + AHA: irritation and barrier disruption', source: DERM },
   { a: 'Retinol', b: 'Lactic Acid', severity: 'HIGH', reason: 'Retinoid + AHA: irritation and barrier disruption', source: DERM },
   { a: 'Retinol', b: 'Salicylic Acid', severity: 'MEDIUM', reason: 'Retinoid + BHA: over-exfoliation and sensitivity', source: DERM },
-  { a: 'Tretinoin', b: 'Glycolic Acid', severity: 'HIGH', reason: 'Retinoid + AHA: high irritation and skin-barrier damage', source: DERM },
-  { a: 'Tretinoin', b: 'Salicylic Acid', severity: 'HIGH', reason: 'Retinoid + BHA: compounded exfoliation and irritation', source: DERM },
 
   // Retinoids + benzoyl peroxide — degradation and irritation
   { a: 'Retinoic Acid', b: 'Benzoyl Peroxide', severity: 'HIGH', reason: 'Benzoyl peroxide oxidises and deactivates the retinoid; combined irritation', source: DERM },
-  { a: 'Tretinoin', b: 'Benzoyl Peroxide', severity: 'HIGH', reason: 'Benzoyl peroxide oxidises and deactivates tretinoin; combined irritation', source: DERM },
   { a: 'Retinol', b: 'Benzoyl Peroxide', severity: 'MEDIUM', reason: 'Benzoyl peroxide can degrade retinol; combined dryness and irritation', source: DERM },
 
   // Retinoids + brightening agents
   { a: 'Retinoic Acid', b: 'Kojic Acid', severity: 'MEDIUM', reason: 'Retinoid + Kojic acid: over-exfoliation and sensitivity', source: DERM },
-  { a: 'Retinoic Acid', b: 'Vitamin C', severity: 'MEDIUM', reason: 'Retinoid + Vitamin C: instability and irritation at differing pH', source: DERM },
   { a: 'Retinoic Acid', b: 'Ascorbic Acid', severity: 'MEDIUM', reason: 'Retinoid + Vitamin C: instability and irritation at differing pH', source: DERM },
-  { a: 'Retinol', b: 'Vitamin C', severity: 'MEDIUM', reason: 'Retinoid + Vitamin C: instability and irritation at differing pH', source: DERM },
+  { a: 'Retinol', b: 'Ascorbic Acid', severity: 'MEDIUM', reason: 'Retinoid + Vitamin C: instability and irritation at differing pH', source: DERM },
   { a: 'Retinol', b: 'Kojic Acid', severity: 'MEDIUM', reason: 'Retinoid + Kojic acid: over-exfoliation and sensitivity', source: DERM },
 
   // Acid stacking — cumulative over-exfoliation

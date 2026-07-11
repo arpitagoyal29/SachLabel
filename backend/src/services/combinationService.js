@@ -1,14 +1,11 @@
 const prisma = require('../lib/prisma');
-const { normalize } = require('../lib/normalize');
+const { resolveIngredientNames } = require('./aliasService');
 
 async function checkCombinations(names) {
-  const ingredients = await prisma.ingredient.findMany({
-    where: { normalizedName: { in: names.map(normalize) } },
-  });
+  const resolved = await resolveIngredientNames(names);
+  const ids = [...new Set(resolved.filter(Boolean).map((i) => i.id))];
 
-   const ids = ingredients.map((i) => i.id);
-
-    const rules = await prisma.combinationRule.findMany({
+  const rules = await prisma.combinationRule.findMany({
     where: {
       ingredientAId: { in: ids },
       ingredientBId: { in: ids },

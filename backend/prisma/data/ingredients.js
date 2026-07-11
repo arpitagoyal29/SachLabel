@@ -16,10 +16,10 @@
  *   RESTRICTED  Permitted only under concentration/use-condition limits.
  *   SAFE        No known regulatory prohibition. (NOT a certification of safety.)
  *
- * NOTE ON SYNONYMS: there is no alias table yet, so common synonyms are seeded
- * as separate rows (e.g. "Tretinoin" and "Retinoic Acid"; "Aqua" and "Water").
- * This is a pragmatic workaround so a dangerous ingredient listed under an
- * alternate name is still caught. Replace with a proper alias table later.
+ * NOTE ON SYNONYMS: common synonyms (e.g. "Tretinoin" for "Retinoic Acid", "Aqua"
+ * for "Water") are NOT duplicated as separate rows here — they're seeded once, as
+ * a canonical entry below, and resolved via data/aliases.js + the IngredientAlias
+ * table at query time. Only put a name here if it's a genuinely distinct substance.
  */
 
 const CDSCO_H = 'CDSCO Schedule H (Drugs & Cosmetics Rules)';
@@ -32,7 +32,6 @@ const ingredients = [
   // SCHEDULE_H — prescription-only drugs, illegal in OTC cosmetics
   // ─────────────────────────────────────────────────────────────
   { name: 'Retinoic Acid', status: 'SCHEDULE_H', reason: 'Prescription-only drug; illegal to sell OTC in cosmetics', source: CDSCO_H },
-  { name: 'Tretinoin', status: 'SCHEDULE_H', reason: 'Prescription-only retinoid (same molecule as Retinoic Acid); illegal OTC', source: CDSCO_H },
   { name: 'Isotretinoin', status: 'SCHEDULE_H', reason: 'Prescription-only retinoid; teratogenic; illegal in cosmetics', source: CDSCO_H },
   { name: 'Adapalene', status: 'SCHEDULE_H', reason: 'Prescription-only retinoid in India; not permitted in OTC cosmetics', source: CDSCO_H },
   { name: 'Hydroquinone', status: 'SCHEDULE_H', reason: 'Skin-lightening agent; prescription-only above 2% in India. Also prohibited in EU skin-lightening cosmetics', source: CDSCO_H },
@@ -72,7 +71,6 @@ const ingredients = [
   // ─────────────────────────────────────────────────────────────
   { name: 'Methyldibromo Glutaronitrile', status: 'EU_BANNED', reason: 'Preservative; strong contact allergen; prohibited in EU cosmetics', source: EU_ANNEX_II },
   { name: 'Zinc Pyrithione', status: 'EU_BANNED', reason: 'Prohibited in EU cosmetics (reprotoxic classification)', source: EU_ANNEX_II },
-  { name: 'Pyrithione Zinc', status: 'EU_BANNED', reason: 'Prohibited in EU cosmetics (reprotoxic classification); same substance as Zinc Pyrithione, common alternate label word order', source: EU_ANNEX_II },
   { name: 'Butylphenyl Methylpropional', status: 'EU_BANNED', reason: 'Fragrance ingredient (Lilial); reprotoxic; prohibited in EU cosmetics', source: EU_ANNEX_II },
   { name: 'Diethylene Glycol', status: 'EU_BANNED', reason: 'Toxic solvent; prohibited in cosmetics', source: EU_ANNEX_II },
   { name: 'Isopropylparaben', status: 'EU_BANNED', reason: 'Paraben preservative; prohibited in EU cosmetics', source: EU_ANNEX_II },
@@ -102,7 +100,6 @@ const ingredients = [
   // SAFE — no known regulatory prohibition (NOT a safety certification)
   // ─────────────────────────────────────────────────────────────
   { name: 'Water', status: 'SAFE', reason: null, source: null },
-  { name: 'Aqua', status: 'SAFE', reason: null, source: null },
   { name: 'Glycerin', status: 'SAFE', reason: null, source: null },
   { name: 'Niacinamide', status: 'SAFE', reason: null, source: null },
   { name: 'Hyaluronic Acid', status: 'SAFE', reason: null, source: null },
@@ -113,7 +110,6 @@ const ingredients = [
   { name: 'Panthenol', status: 'SAFE', reason: null, source: null },
   { name: 'Tocopherol', status: 'SAFE', reason: null, source: null },
   { name: 'Ascorbic Acid', status: 'SAFE', reason: null, source: null },
-  { name: 'Vitamin C', status: 'SAFE', reason: null, source: null },
   { name: 'Allantoin', status: 'SAFE', reason: null, source: null },
   { name: 'Zinc Oxide', status: 'SAFE', reason: null, source: null },
   { name: 'Titanium Dioxide', status: 'SAFE', reason: null, source: null },

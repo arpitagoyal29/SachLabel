@@ -1,30 +1,23 @@
-const prisma = require('../lib/prisma');
-const { normalize } = require('../lib/normalize');
+const { resolveIngredientNames } = require('./aliasService');
 
-async function verifyIngredient(name){
-    const ingredient = await prisma.ingredient.findUnique({
-        where: { normalizedName: normalize(name) },
-    });
-    if(!ingredient) {
-        return {
-            name,
-            status: 'UNKNOWN',
-            reason: 'Not found in our reference database',
-            source: null,
-        };
+async function verifyIngredient(name) {
+  const [resolved] = await resolveIngredientNames([name]);
+  return (
+    resolved ?? {
+      name,
+      status: 'UNKNOWN',
+      reason: 'Not found in our reference database',
+      source: null,
     }
-    return ingredient;
+  );
 }
 
 async function verifyIngredients(names) {
   if (names.length === 0) return [];
-  const found = await prisma.ingredient.findMany({
-    where: { normalizedName: { in: names.map(normalize) } },
-  });
-  const byNormalizedName = new Map(found.map((ing) => [ing.normalizedName, ing]));
+  const resolved = await resolveIngredientNames(names);
   return names.map(
-    (name) =>
-      byNormalizedName.get(normalize(name)) ?? {
+    (name, i) =>
+      resolved[i] ?? {
         name,
         status: 'UNKNOWN',
         reason: 'Not found in our reference database',
@@ -33,4 +26,4 @@ async function verifyIngredients(names) {
   );
 }
 
-module.exports = { verifyIngredient,verifyIngredients };
+module.exports = { verifyIngredient, verifyIngredients };
