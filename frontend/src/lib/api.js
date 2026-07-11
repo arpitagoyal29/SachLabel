@@ -1,5 +1,7 @@
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 export async function verifyProduct(payload) {
-  const res = await fetch('/api/verify-product', {
+  const res = await fetch(`${API_BASE}/api/verify-product`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -16,7 +18,7 @@ export async function extractIngredients(imageFile) {
   const formData = new FormData()
   formData.append('image', imageFile)
 
-  const res = await fetch('/api/extract-ingredients', {
+  const res = await fetch(`${API_BASE}/api/extract-ingredients`, {
     method: 'POST',
     body: formData,
   })
