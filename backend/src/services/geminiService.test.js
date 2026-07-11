@@ -1,5 +1,5 @@
 process.env.GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'test-key';
-const { extractFromImage } = require('./geminiService');
+const { extractFromImage, QuotaExceededError } = require('./geminiService');
 const redis = require('../lib/redis');
 
 afterAll(async () => {
@@ -40,6 +40,13 @@ describe('extractFromImage', () => {
 
     const result = await extractFromImage(Buffer.from('fake-image'), 'image/jpeg');
     expect(result).toEqual([]);
+  });
+
+  test('propagates a QuotaExceededError on 429 and does not retry', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 429 });
+
+    await expect(extractFromImage(Buffer.from('fake-image'), 'image/jpeg')).rejects.toThrow(QuotaExceededError);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
   test('returns [] on malformed (non-array) JSON instead of throwing', async () => {

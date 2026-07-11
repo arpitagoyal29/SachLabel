@@ -38,12 +38,12 @@ function ProductForm({ onSubmit }) {
     try {
       const ingredients = await extractIngredients(file)
       if (ingredients.length === 0) {
-        setExtractError('No ingredient list detected — try a clearer photo, or type it in below')
+        setExtractError("Couldn't read this one — try again, or type the ingredients in below")
       } else {
         setIngredientsText(ingredients.join('\n'))
       }
     } catch (err) {
-      setExtractError('Could not read the photo — try again or type the ingredients manually')
+       setExtractError(err.message || 'Could not read the photo — try again or type the ingredients manually')
     } finally {
       setIsExtracting(false)
       e.target.value = ''

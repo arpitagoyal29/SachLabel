@@ -42,7 +42,7 @@ async function verifyProduct(product) {
   // Layer 2 — dangerous combinations
   const combos = await checkCombinations(ingredients);
   for (const c of combos) {
-    findings.push({ layer: 2, severity: c.severity, detail: `${c.ingredientA} + ${c.ingredientB}: ${c.reason}` });
+        findings.push({ layer: 2, severity: c.severity, detail: `${c.ingredientA} + ${c.ingredientB}: ${c.reason}`, ingredientA: c.ingredientA, ingredientB: c.ingredientB });
   }
 
   // Layer 6 — vague disclosure

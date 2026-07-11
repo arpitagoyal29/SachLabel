@@ -22,7 +22,8 @@ export async function extractIngredients(imageFile) {
   })
 
   if (!res.ok) {
-    throw new Error(`extract-ingredients failed: ${res.status}`)
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || `extract-ingredients failed: ${res.status}`)
   }
 
   const data = await res.json()
